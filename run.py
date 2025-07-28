@@ -5,6 +5,8 @@ Entry point script for the application.
 """
 import asyncio
 import sys
+import time
+from datetime import datetime
 
 from loguru import logger
 
@@ -103,9 +105,9 @@ class WeatherReporter:
             await self._telegram.close()
 
 
-async def main() -> None:
+async def run_weather_report() -> None:
     """
-    Main entry point for the application.
+    Run the weather reporting workflow once.
     """
     reporter = WeatherReporter()
     success = await reporter.run()
@@ -114,8 +116,39 @@ async def main() -> None:
         logger.success("Weather report successfully sent to Telegram")
     else:
         logger.error("Failed to send weather report")
-        sys.exit(1)
+
+
+async def main() -> None:
+    """
+    Main entry point for the application.
+    
+    Runs in an infinite loop, checking the time and only executing
+    the weather reporting workflow at 14:35.
+    """
+    logger.info("Starting NHK Weather Parser with time-based execution")
+    logger.info("Will run daily at 14:35")
+    
+    while True:
+        now = datetime.now()
+        
+        if now.hour == 14 and now.minute == 35:
+            logger.info(f"It's {now.hour}:{now.minute}, running weather report")
+            await run_weather_report()
+            
+            logger.info("Sleeping for 60 seconds to avoid duplicate runs")
+            time.sleep(65)
+        else:
+            logger.debug(f"Current time: {now.hour}:{now.minute}, not yet 14:35")
+            
+            time.sleep(10)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("Process interrupted by user")
+        sys.exit(0)
+    except Exception as e:
+        logger.exception(f"Unexpected error: {e}")
+        sys.exit(1)

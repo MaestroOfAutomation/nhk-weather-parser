@@ -2,9 +2,6 @@ name: Deploy script
 
 on:
   workflow_dispatch:
-  schedule:
-    # Run daily at 11:20 UTC
-    - cron: '25 11 * * *'
 
 jobs:
   deploy:

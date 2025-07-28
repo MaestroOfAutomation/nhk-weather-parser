@@ -9,7 +9,7 @@ A tool that scrapes weather data from the NHK Japan weather website, generates a
 - Takes a screenshot of the weather map
 - Generates a weather summary using DeepSeek AI
 - Posts the summary and screenshot to a Telegram channel
-- Runs as a scheduled task (cron job)
+- Runs with built-in time-based execution (daily at 14:35)
 
 ## Project Structure
 
@@ -121,7 +121,7 @@ Alternatively, you can set the following environment variables:
 
 ## GitHub Actions Deployment
 
-This project includes a GitHub Actions workflow for deployment:
+This project includes a GitHub Actions workflow for manual deployment:
 
 ### Self-Hosted Deployment
 
@@ -136,7 +136,7 @@ This workflow deploys the application on a self-hosted runner using Docker:
    - Name: `CONFIG`
    - Value: Copy the entire content of your config.json file
 3. Go to the "Actions" tab in your repository
-4. Select the "Deploy bot" workflow
+4. Select the "Deploy script" workflow
 5. Click "Run workflow"
 
 The workflow will:
@@ -146,68 +146,67 @@ The workflow will:
 - Stop and remove any existing container
 - Deploy the application using Docker
 
+The application has built-in time-based execution and will automatically run daily at 14:35, without requiring any external scheduling.
+
 You can copy the `example.config.json` file to `config.json` and fill in your actual values before creating the GitHub variable.
 
-## Setting Up as a Cron Job
+## Built-in Time-Based Execution
 
-### Using Docker
+The application now has built-in time-based execution that eliminates the need for external scheduling with cron or other tools. The script will:
+
+1. Run continuously in the background
+2. Check the current time every 30 seconds
+3. Execute the weather reporting workflow only at 14:35 each day
+4. Sleep during other times to minimize resource usage
+
+### Running with Docker
+
+To run the application with its built-in scheduling:
 
 ```bash
-# Run daily at 8:00 AM
-0 8 * * * docker run --rm -v /path/to/config.json:/app/config.json ghcr.io/username/nhk-japan-weather-parser:latest
+# Run the container in detached mode
+docker run -d --name nhk-weather-parser -v /path/to/config.json:/app/config.json ghcr.io/username/nhk-japan-weather-parser:latest
 ```
 
-### Using systemd timer (Linux)
+The container will continue running indefinitely, executing the weather reporting workflow daily at 14:35.
 
-1. Create a service file `/etc/systemd/system/nhk-weather.service`:
-   ```
-   [Unit]
-   Description=NHK Japan Weather Parser
-   After=network.target
+### Running Locally
 
-   [Service]
-   Type=oneshot
-   ExecStart=/usr/bin/python /path/to/nhk-japan-weather-parser/run.py
-   WorkingDirectory=/path/to/nhk-japan-weather-parser
-   User=yourusername
+To run the application locally with its built-in scheduling:
 
-   [Install]
-   WantedBy=multi-user.target
-   ```
+```bash
+# Start the application
+python run.py
+```
 
-2. Create a timer file `/etc/systemd/system/nhk-weather.timer`:
-   ```
-   [Unit]
-   Description=Run NHK Japan Weather Parser daily
+The script will run continuously, checking the time and executing the weather reporting workflow at 14:35 each day. You can use tools like `nohup`, `screen`, or `tmux` to keep the script running in the background:
 
-   [Timer]
-   OnCalendar=*-*-* 08:00:00
-   Persistent=true
+```bash
+# Using nohup
+nohup python run.py > weather_parser.log 2>&1 &
 
-   [Install]
-   WantedBy=timers.target
-   ```
-
-3. Enable and start the timer:
-   ```bash
-   sudo systemctl enable nhk-weather.timer
-   sudo systemctl start nhk-weather.timer
-   ```
+# Using screen
+screen -S weather-parser
+python run.py
+# Press Ctrl+A, then D to detach
+```
 
 ## How It Works
 
-1. **Web Scraping**: The application uses Playwright to scrape weather data from the NHK Japan weather website. It captures information about cities, temperatures, and weather conditions.
+1. **Time-Based Execution**: The application runs continuously, checking the current time every 30 seconds. It only executes the weather reporting workflow at 14:35 each day, sleeping during other times to minimize resource usage.
 
-2. **Translation**: Japanese city names are translated to Russian using DeepSeek AI. The application maintains a dictionary of common city translations and uses AI for any unknown cities.
+2. **Web Scraping**: The application uses Playwright to scrape weather data from the NHK Japan weather website. It captures information about cities, temperatures, and weather conditions.
 
-3. **Weather Summary**: The application generates a concise weather summary in Russian using DeepSeek AI. The summary includes:
+3. **Translation**: Japanese city names are translated to Russian using DeepSeek AI. The application maintains a dictionary of common city translations and uses AI for any unknown cities.
+
+4. **Weather Summary**: The application generates a concise weather summary in Russian using DeepSeek AI. The summary includes:
    - Current date
    - Weather conditions in key cities (especially Tokyo, Sapporo, and southern cities)
    - Maximum temperatures in Celsius
    - Notable weather phenomena (rain, storms, snow, etc.)
    - Appropriate emojis
 
-4. **Telegram Posting**: The weather summary and a screenshot of the weather map are posted to a Telegram channel using the Telegram Bot API.
+5. **Telegram Posting**: The weather summary and a screenshot of the weather map are posted to a Telegram channel using the Telegram Bot API.
 
 ## AI Integration
 
@@ -262,6 +261,9 @@ Please make sure your code follows the existing style and includes appropriate t
 
 ## Recent Updates
 
+- **July 28, 2025**: Implemented built-in time-based execution (14:35 daily) to replace cron scheduling
+- Removed dependency on external scheduling tools
+- Updated documentation to reflect the new scheduling approach
 - **July 2025**: Updated README with more detailed documentation
 - Added troubleshooting section
 - Improved installation instructions
