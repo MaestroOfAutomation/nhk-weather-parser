@@ -6,7 +6,7 @@ Entry point script for the application.
 import asyncio
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, UTC
 
 from loguru import logger
 
@@ -123,22 +123,22 @@ async def main() -> None:
     Main entry point for the application.
     
     Runs in an infinite loop, checking the time and only executing
-    the weather reporting workflow at 14:35.
+    the weather reporting workflow at 11:37.
     """
     logger.info("Starting NHK Weather Parser with time-based execution")
-    logger.info("Will run daily at 14:35")
+    logger.info("Will run daily at 11:37")
     
     while True:
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         
-        if now.hour == 14 and now.minute == 35:
+        if now.hour == 11 and now.minute == 37:
             logger.info(f"It's {now.hour}:{now.minute}, running weather report")
             await run_weather_report()
             
             logger.info("Sleeping for 60 seconds to avoid duplicate runs")
             time.sleep(65)
         else:
-            logger.debug(f"Current time: {now.hour}:{now.minute}, not yet 14:35")
+            logger.debug(f"Current time: {now.hour}:{now.minute}, not yet 11:37")
             
             time.sleep(10)
 
