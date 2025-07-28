@@ -3,8 +3,8 @@ name: Deploy script
 on:
   workflow_dispatch:
   schedule:
-    # Run daily at 11:00 UTC
-    - cron: '0 11 * * *'
+    # Run daily at 11:12 UTC
+    - cron: '12 11 * * *'
 
 jobs:
   deploy:
@@ -25,4 +25,4 @@ jobs:
 
       - name: Deploy with Docker
         run: |
-          docker run -d --name nhk-weather-parser --restart unless-stopped -v "$(pwd)/config.json:/app/config.json" nhk-weather-parser
+          docker run -d --name nhk-weather-parser --restart never -v "$(pwd)/config.json:/app/config.json" nhk-weather-parser
