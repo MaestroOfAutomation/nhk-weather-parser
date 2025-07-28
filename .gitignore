@@ -33,7 +33,6 @@ ENV/
 
 # Project specific
 config.json
-*.png
 *.log
 
 # OS specific
