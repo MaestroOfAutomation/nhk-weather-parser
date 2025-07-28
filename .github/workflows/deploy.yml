@@ -1,0 +1,24 @@
+name: Deploy bot
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run daily at 22:00 UTC
+    - cron: '0 22 * * *'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker compose build
+
+      - name: Create config file
+        run: echo '${{ vars.CONFIG }}' > config.json
+
+      - name: Deploy with docker compose
+        run: |
+          docker compose down
+          docker compose up -d --build
