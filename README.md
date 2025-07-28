@@ -125,7 +125,7 @@ This project includes a GitHub Actions workflow for deployment:
 
 ### Self-Hosted Deployment
 
-This workflow deploys the application on a self-hosted runner using Docker Compose:
+This workflow deploys the application on a self-hosted runner using Docker:
 
 1. Set up a self-hosted GitHub Actions runner on your server
 2. Create a GitHub repository variable named `CONFIG` containing your entire config.json content:
@@ -141,9 +141,10 @@ This workflow deploys the application on a self-hosted runner using Docker Compo
 
 The workflow will:
 - Check out the code
-- Build the Docker image using Docker Compose
+- Build the Docker image
 - Create a config.json file from your GitHub variable
-- Deploy the application using Docker Compose
+- Stop and remove any existing container
+- Deploy the application using Docker
 
 You can copy the `example.config.json` file to `config.json` and fill in your actual values before creating the GitHub variable.
 

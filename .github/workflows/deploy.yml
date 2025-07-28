@@ -13,12 +13,17 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker compose build
+        run: docker build -t nhk-weather-parser .
 
       - name: Create config file
         run: echo '${{ vars.CONFIG }}' > config.json
 
-      - name: Deploy with docker compose
+      - name: Stop and remove existing container if running
         run: |
-          docker compose down
-          docker compose up -d --build
+          docker stop nhk-weather-parser || true
+          docker rm nhk-weather-parser || true
+
+      - name: Deploy with Docker
+        run: |
+          $configPath = Join-Path -Path $PWD -ChildPath "config.json"
+          docker run -d --name nhk-weather-parser --restart unless-stopped -v "${configPath}:/app/config.json" nhk-weather-parser
