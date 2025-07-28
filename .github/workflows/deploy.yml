@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Run daily at 11:12 UTC
-    - cron: '12 11 * * *'
+    - cron: '15 11 * * *'
 
 jobs:
   deploy:
