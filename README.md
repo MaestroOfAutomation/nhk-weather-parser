@@ -1,5 +1,12 @@
 # NHK Japan Weather Parser
 
+<p align="center">
+    <a href="https://github.com/MaestroOfAutomation/nhk-weather-parser/">
+        <img src="https://raw.githubusercontent.com/MaestroOfAutomation/nhk-weather-parser/main/images/example.png" alt="example" title="example" width="1024" /><br/>
+    </a>
+</p>
+
+
 A tool that scrapes weather data from the NHK Japan weather website, generates a summary using AI, and posts it to a Telegram channel.
 
 ## Features
