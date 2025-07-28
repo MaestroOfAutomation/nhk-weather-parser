@@ -123,22 +123,24 @@ async def main() -> None:
     Main entry point for the application.
     
     Runs in an infinite loop, checking the time and only executing
-    the weather reporting workflow at 11:37.
+    the weather reporting workflow at specified time.
     """
+    hours, minutes = 16, 00 # UTC
     logger.info("Starting NHK Weather Parser with time-based execution")
-    logger.info("Will run daily at 11:37")
+    logger.info(f"Will run daily at {hours}:{minutes}")
     
     while True:
         now = datetime.now(tz=UTC)
         
-        if now.hour == 11 and now.minute == 37:
+        if now.hour == hours and now.minute == minutes:
             logger.info(f"It's {now.hour}:{now.minute}, running weather report")
             await run_weather_report()
             
             logger.info("Sleeping for 60 seconds to avoid duplicate runs")
             time.sleep(65)
         else:
-            logger.debug(f"Current time: {now.hour}:{now.minute}, not yet 11:37")
+            if minutes % 10 == 0:
+                logger.debug(f"Current time: {now.hour}:{now.minute}, not yet {hours}:{minutes}")
             
             time.sleep(10)
 
