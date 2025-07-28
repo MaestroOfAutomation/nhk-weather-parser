@@ -188,20 +188,7 @@ The container will continue running indefinitely, executing the weather reportin
 To run the application locally with its built-in scheduling:
 
 ```bash
-# Start the application
 python run.py
-```
-
-The script will run continuously, checking the time and executing the weather reporting workflow at the configured time each day (default: 16:00 UTC). You can use tools like `nohup`, `screen`, or `tmux` to keep the script running in the background:
-
-```bash
-# Using nohup
-nohup python run.py > weather_parser.log 2>&1 &
-
-# Using screen
-screen -S weather-parser
-python run.py
-# Press Ctrl+A, then D to detach
 ```
 
 ## How It Works
