@@ -139,11 +139,11 @@ This project includes a GitHub Actions workflow for manual deployment:
 This workflow deploys the application on a self-hosted runner using Docker:
 
 1. Set up a self-hosted GitHub Actions runner on your server
-2. Create a GitHub repository variable named `CONFIG` containing your entire config.json content:
+2. Create a GitHub repository secret named `CONFIG` containing your entire config.json content:
    - Go to your repository settings
    - Select "Secrets and variables" → "Actions"
-   - Go to the "Variables" tab
-   - Click "New repository variable"
+   - Go to the "Secrets" tab
+   - Click "New repository secret"
    - Name: `CONFIG`
    - Value: Copy the entire content of your config.json file
 3. Go to the "Actions" tab in your repository
@@ -153,13 +153,13 @@ This workflow deploys the application on a self-hosted runner using Docker:
 The workflow will:
 - Check out the code
 - Build the Docker image
-- Create a config.json file from your GitHub variable
+- Create a config.json file from your GitHub secret
 - Stop and remove any existing container
 - Deploy the application using Docker
 
 The application has built-in time-based execution and will automatically run daily at the time specified in the config.json file (default: 16:00 UTC), without requiring any external scheduling.
 
-You can copy the `example.config.json` file to `config.json` and fill in your actual values before creating the GitHub variable.
+You can copy the `example.config.json` file to `config.json` and fill in your actual values before creating the GitHub secret.
 
 ## Built-in Time-Based Execution
 
