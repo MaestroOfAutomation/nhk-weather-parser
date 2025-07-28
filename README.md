@@ -82,7 +82,7 @@ Alternatively, you can set the following environment variables:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/nhk-japan-weather-parser.git
+   git clone https://github.com/username/nhk-japan-weather-parser.git
    cd nhk-japan-weather-parser
    ```
 
@@ -91,9 +91,9 @@ Alternatively, you can set the following environment variables:
    pip install -r requirements.txt
    ```
 
-3. Install camoufox:
+3. Install Playwright browsers:
    ```bash
-   pip install camoufox
+   python -m playwright install --with-deps firefox
    ```
 
 4. Create and configure your `config.json` file
@@ -107,7 +107,7 @@ Alternatively, you can set the following environment variables:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/nhk-japan-weather-parser.git
+   git clone https://github.com/username/nhk-japan-weather-parser.git
    cd nhk-japan-weather-parser
    ```
 
@@ -121,20 +121,7 @@ Alternatively, you can set the following environment variables:
 
 ## GitHub Actions Deployment
 
-This project includes two GitHub Actions workflows:
-
-### Build and Push Docker Image
-
-This workflow builds and pushes the Docker image to GitHub Container Registry:
-
-1. Fork this repository
-2. Go to the "Actions" tab in your repository
-3. Select the "Build and Deploy Docker Image" workflow
-4. Click "Run workflow"
-5. Enter a tag for the Docker image (default: "latest")
-6. Click "Run workflow" again
-
-The Docker image will be built and pushed to GitHub Container Registry.
+This project includes a GitHub Actions workflow for deployment:
 
 ### Self-Hosted Deployment
 
@@ -166,7 +153,7 @@ You can copy the `example.config.json` file to `config.json` and fill in your ac
 
 ```bash
 # Run daily at 8:00 AM
-0 8 * * * docker run --rm -v /path/to/config.json:/app/config.json ghcr.io/yourusername/nhk-japan-weather-parser:latest
+0 8 * * * docker run --rm -v /path/to/config.json:/app/config.json ghcr.io/username/nhk-japan-weather-parser:latest
 ```
 
 ### Using systemd timer (Linux)
@@ -205,6 +192,79 @@ You can copy the `example.config.json` file to `config.json` and fill in your ac
    sudo systemctl enable nhk-weather.timer
    sudo systemctl start nhk-weather.timer
    ```
+
+## How It Works
+
+1. **Web Scraping**: The application uses Playwright to scrape weather data from the NHK Japan weather website. It captures information about cities, temperatures, and weather conditions.
+
+2. **Translation**: Japanese city names are translated to Russian using DeepSeek AI. The application maintains a dictionary of common city translations and uses AI for any unknown cities.
+
+3. **Weather Summary**: The application generates a concise weather summary in Russian using DeepSeek AI. The summary includes:
+   - Current date
+   - Weather conditions in key cities (especially Tokyo, Sapporo, and southern cities)
+   - Maximum temperatures in Celsius
+   - Notable weather phenomena (rain, storms, snow, etc.)
+   - Appropriate emojis
+
+4. **Telegram Posting**: The weather summary and a screenshot of the weather map are posted to a Telegram channel using the Telegram Bot API.
+
+## AI Integration
+
+This project uses DeepSeek AI for two main purposes:
+
+1. **Translation**: Converting Japanese city names to Russian
+2. **Weather Summary Generation**: Creating natural language summaries of weather data
+
+The DeepSeek API is used with specific prompts designed to:
+- Generate accurate translations of Japanese city names
+- Create concise, informative weather summaries in Russian
+- Rephrase summaries for better readability
+
+## Troubleshooting
+
+### Common Issues
+
+1. **No weather data found**
+   - Check if the NHK website structure has changed
+   - Verify that the CSS selector in config.json is correct
+   - Increase the wait time in browser.py if the page is loading slowly
+
+2. **Translation issues**
+   - Verify your DeepSeek API key is valid
+   - Check the DeepSeek API URL in your configuration
+   - Ensure you have sufficient API credits
+
+3. **Telegram posting fails**
+   - Verify your bot token is correct
+   - Ensure the bot has permission to post in the specified chat
+   - Check if the message or caption exceeds Telegram's length limits
+
+### Debugging
+
+The application uses the loguru library for logging. To enable more detailed logs, you can set the `LOGURU_LEVEL` environment variable:
+
+```bash
+LOGURU_LEVEL=DEBUG python run.py
+```
+
+## Contributing
+
+Contributions are welcome! Here's how you can contribute:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin feature-name`
+5. Submit a pull request
+
+Please make sure your code follows the existing style and includes appropriate tests.
+
+## Recent Updates
+
+- **July 2025**: Updated README with more detailed documentation
+- Added troubleshooting section
+- Improved installation instructions
+- Enhanced AI integration documentation
 
 ## License
 
