@@ -13,9 +13,12 @@ jobs:
         run: docker build -t nhk-weather-parser .
 
       - name: Create config file
+        shell: bash
+        env:
+          CONFIG: ${{ vars.CONFIG }}
         run: |
-          echo "::add-mask::${{ vars.CONFIG }}"
-          echo "${{ vars.CONFIG }}" > config.json
+          printf '%s' "$CONFIG" > config.json
+          chmod 600 config.json
 
       - name: Stop and remove existing container if running
         run: |
