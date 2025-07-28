@@ -10,6 +10,7 @@ from datetime import datetime, UTC
 
 from loguru import logger
 
+from nhk_weather.config.config import config
 from nhk_weather.core.models import CityWeather
 from nhk_weather.services.ai import deepseek_client
 from nhk_weather.services.browser import browser_scraper
@@ -125,9 +126,9 @@ async def main() -> None:
     Runs in an infinite loop, checking the time and only executing
     the weather reporting workflow at specified time.
     """
-    hours, minutes = 16, 00 # UTC
+    hours, minutes = config.schedule_hours, config.schedule_minutes
     logger.info("Starting NHK Weather Parser with time-based execution")
-    logger.info(f"Will run daily at {hours}:{minutes}")
+    logger.info(f"Will run daily at {hours}:{minutes:02d} UTC (configured in config.json)")
     
     while True:
         now = datetime.now(tz=UTC)

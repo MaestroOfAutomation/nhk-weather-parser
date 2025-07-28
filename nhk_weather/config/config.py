@@ -98,6 +98,16 @@ class Config:
     def nhk_map_selector(self) -> str:
         """Get the CSS selector for the NHK weather map."""
         return cast(str, self.get('nhk', 'map_selector', '.theWeatherForecastWeeklyMap'))
+    
+    @property
+    def schedule_hours(self) -> int:
+        """Get the scheduled execution hours (UTC)."""
+        return cast(int, self.get('schedule', 'hours', 16))
+    
+    @property
+    def schedule_minutes(self) -> int:
+        """Get the scheduled execution minutes (UTC)."""
+        return cast(int, self.get('schedule', 'minutes', 0))
 
 
 config = Config()

@@ -11,5 +11,9 @@
   "nhk": {
     "url": "https://www.nhk.or.jp/kishou-saigai/",
     "map_selector": ".theWeatherForecastWeeklyMap"
+  },
+  "schedule": {
+    "hours": 16,
+    "minutes": 0
   }
 }

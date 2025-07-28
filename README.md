@@ -9,7 +9,7 @@ A tool that scrapes weather data from the NHK Japan weather website, generates a
 - Takes a screenshot of the weather map
 - Generates a weather summary using DeepSeek AI
 - Posts the summary and screenshot to a Telegram channel
-- Runs with built-in time-based execution (daily at 14:35)
+- Runs with built-in time-based execution (configurable schedule)
 
 ## Project Structure
 
@@ -65,6 +65,10 @@ Create a `config.json` file in the project root with the following structure:
   "nhk": {
     "url": "https://www.nhk.or.jp/kishou-saigai/",
     "map_selector": ".theWeatherForecastWeeklyMap"
+  },
+  "schedule": {
+    "hours": 16,
+    "minutes": 0
   }
 }
 ```
@@ -146,17 +150,19 @@ The workflow will:
 - Stop and remove any existing container
 - Deploy the application using Docker
 
-The application has built-in time-based execution and will automatically run daily at 14:35, without requiring any external scheduling.
+The application has built-in time-based execution and will automatically run daily at the time specified in the config.json file (default: 16:00 UTC), without requiring any external scheduling.
 
 You can copy the `example.config.json` file to `config.json` and fill in your actual values before creating the GitHub variable.
 
 ## Built-in Time-Based Execution
 
-The application now has built-in time-based execution that eliminates the need for external scheduling with cron or other tools. The script will:
+The application now has built-in time-based execution that eliminates the need for external scheduling with cron or other tools. The execution time is configurable in the config.json file under the "schedule" section with "hours" and "minutes" settings (default: 16:00 UTC).
+
+The script will:
 
 1. Run continuously in the background
 2. Check the current time every 30 seconds
-3. Execute the weather reporting workflow only at 14:35 each day
+3. Execute the weather reporting workflow only at the configured time each day
 4. Sleep during other times to minimize resource usage
 
 ### Running with Docker
@@ -168,7 +174,7 @@ To run the application with its built-in scheduling:
 docker run -d --name nhk-weather-parser -v /path/to/config.json:/app/config.json ghcr.io/username/nhk-japan-weather-parser:latest
 ```
 
-The container will continue running indefinitely, executing the weather reporting workflow daily at 14:35.
+The container will continue running indefinitely, executing the weather reporting workflow daily at the configured time (default: 16:00 UTC).
 
 ### Running Locally
 
@@ -179,7 +185,7 @@ To run the application locally with its built-in scheduling:
 python run.py
 ```
 
-The script will run continuously, checking the time and executing the weather reporting workflow at 14:35 each day. You can use tools like `nohup`, `screen`, or `tmux` to keep the script running in the background:
+The script will run continuously, checking the time and executing the weather reporting workflow at the configured time each day (default: 16:00 UTC). You can use tools like `nohup`, `screen`, or `tmux` to keep the script running in the background:
 
 ```bash
 # Using nohup
@@ -193,7 +199,7 @@ python run.py
 
 ## How It Works
 
-1. **Time-Based Execution**: The application runs continuously, checking the current time every 30 seconds. It only executes the weather reporting workflow at 14:35 each day, sleeping during other times to minimize resource usage.
+1. **Time-Based Execution**: The application runs continuously, checking the current time every 30 seconds. It only executes the weather reporting workflow at the configured time each day (set in config.json, default: 16:00 UTC), sleeping during other times to minimize resource usage.
 
 2. **Web Scraping**: The application uses Playwright to scrape weather data from the NHK Japan weather website. It captures information about cities, temperatures, and weather conditions.
 
@@ -258,16 +264,6 @@ Contributions are welcome! Here's how you can contribute:
 5. Submit a pull request
 
 Please make sure your code follows the existing style and includes appropriate tests.
-
-## Recent Updates
-
-- **July 28, 2025**: Implemented built-in time-based execution (14:35 daily) to replace cron scheduling
-- Removed dependency on external scheduling tools
-- Updated documentation to reflect the new scheduling approach
-- **July 2025**: Updated README with more detailed documentation
-- Added troubleshooting section
-- Improved installation instructions
-- Enhanced AI integration documentation
 
 ## License
 
