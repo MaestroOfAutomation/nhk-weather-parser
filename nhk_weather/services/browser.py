@@ -5,7 +5,7 @@ import asyncio
 import re
 from typing import Dict, List, Any, Tuple
 
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright, ViewportSize
 from loguru import logger
 
 from nhk_weather.config.config import config
@@ -137,10 +137,13 @@ class BrowserScraper:
         logger.info("Opening browser")
         async with async_playwright() as playwright:
             browser = await playwright.firefox.launch(headless=True)
-            page = await browser.new_page()
+            context = await browser.new_context(
+                viewport=ViewportSize(width=1600, height=1200)
+            )
+            page = await context.new_page()
             
             await page.goto(self._url)
-            await page.wait_for_selector(self._map_selector, timeout=30000)
+            await page.wait_for_selector(self._map_selector, timeout=30_000)
             
             await asyncio.sleep(10)
             
