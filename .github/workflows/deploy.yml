@@ -25,5 +25,4 @@ jobs:
 
       - name: Deploy with Docker
         run: |
-          $configPath = Join-Path -Path $PWD -ChildPath "config.json"
-          docker run -d --name nhk-weather-parser --restart unless-stopped -v "${configPath}:/app/config.json" nhk-weather-parser
+          docker run -d --name nhk-weather-parser --restart unless-stopped -v "$(pwd)/config.json:/app/config.json" nhk-weather-parser
