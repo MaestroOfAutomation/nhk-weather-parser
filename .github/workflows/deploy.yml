@@ -1,10 +1,10 @@
-name: Deploy bot
+name: Deploy script
 
 on:
   workflow_dispatch:
   schedule:
-    # Run daily at 22:00 UTC
-    - cron: '0 22 * * *'
+    # Run daily at 11:00 UTC
+    - cron: '0 11 * * *'
 
 jobs:
   deploy:
